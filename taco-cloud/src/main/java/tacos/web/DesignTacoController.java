@@ -1,11 +1,13 @@
 package tacos.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import lombok.extern.slf4j.Slf4j;
 
 import tacos.Taco;
+import tacos.data.IngredientRepository;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 
@@ -26,12 +29,17 @@ import tacos.Ingredient.Type;
 @RequestMapping("/design")
 public class DesignTacoController {
 	
+	private final IngredientRepository ingredientRepo;
+	
+	@Autowired
+	public DesignTacoController (IngredientRepository ingredientRepo){
+		this.ingredientRepo = ingredientRepo;
+	}
+	
 	@GetMapping
 	public String showDesignForm(Model model) {
-		List <Ingredient> ingredients = Arrays.asList(
-				new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
-				new Ingredient("COTO", "Corn Tortilla", Type.WRAP)
-				);
+		List <Ingredient> ingredients = new ArrayList<>();
+		ingredientRepo.findAll().forEach(i -> ingredients.add(i));
 		
 		Type[] types = Ingredient.Type.values();
 		for(Type type : types) {
