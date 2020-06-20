@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import tacos.Taco;
 import tacos.data.IngredientRepository;
+import tacos.data.TacoRepository;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 
@@ -31,9 +32,12 @@ public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;
 	
+	private TacoRepository tacoRepo;
 	@Autowired
-	public DesignTacoController (IngredientRepository ingredientRepo){
+	public DesignTacoController (IngredientRepository ingredientRepo, TacoRepository tacoRepo){
+		//showDesginForm()과 processDesign() 메서드에서 사용 할 수 있도록 인스턴스에 변수 저장
 		this.ingredientRepo = ingredientRepo;
+		this.tacoRepo = tacoRepo;
 	}
 	
 	@GetMapping
