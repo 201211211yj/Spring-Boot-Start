@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,20 +25,32 @@ import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
+import tacos.Order;
 
 @Slf4j
 @Controller
 @RequestMapping("/design")
+@SessionAttributes("order")
 public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;
-	
 	private TacoRepository tacoRepo;
+	
 	@Autowired
 	public DesignTacoController (IngredientRepository ingredientRepo, TacoRepository tacoRepo){
 		//showDesginForm()과 processDesign() 메서드에서 사용 할 수 있도록 인스턴스에 변수 저장
 		this.ingredientRepo = ingredientRepo;
 		this.tacoRepo = tacoRepo;
+	}
+	
+	@ModelAttribute("order")
+	public Order order() {
+		return new Order();
+	}
+	
+	@ModelAttribute("taco")
+	public Taco taco() {
+		return new Taco();
 	}
 	
 	@GetMapping
@@ -61,12 +74,16 @@ public class DesignTacoController {
 	}
 	
 	@PostMapping
-	public String processDesign(@ModelAttribute @Valid Taco design, Errors errors) {
+	public String processDesign(@Valid Taco design, Errors errors, @ModelAttribute Order order) {
 		if(errors.hasErrors()) {
 			return "design";
 		}
 		
 		log.info("Processing design: " + design);
+		
+		Taco saved = tacoRepo.save(design);
+		order.addDesign(saved);
+		
 		return "redirect:/orders/current";
 	}
 }
