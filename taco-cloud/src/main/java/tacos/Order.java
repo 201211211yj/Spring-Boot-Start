@@ -33,7 +33,7 @@ public class Order {
 	private String ccNumber;
 	
 	@NotBlank(message="required")
-	private String ccExpired;
+	private String ccExpiration;
 	
 	@NotBlank(message="required")
 	private String ccCVV;

@@ -5,12 +5,12 @@ create table if not exists Ingredient (
 );
 
 create table if not exists Taco (
-	id indentity,
+	id identity,
 	name varchar(50) not null,
 	createdAt timestamp not null
 );
 
-create table if not exists Ingredient (
+create table if not exists Taco_Ingredients (
 	taco bigint not null,
 	ingredient varchar(4) not null
 );
@@ -39,6 +39,6 @@ create table if not exists Taco_Order_Tacos(
 );
 
 alter table Taco_Order_Tacos
-	add foreign key (tacoOrdr) references Taco_Order(id);
-alter table Taco Order Tacos
+	add foreign key (tacoOrder) references Taco_Order(id);
+alter table Taco_Order_Tacos
 	add foreign key (taco) references Taco(id);
