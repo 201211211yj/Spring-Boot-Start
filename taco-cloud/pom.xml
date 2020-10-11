@@ -17,6 +17,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<h2.version>1.4.196</h2.version>
+		<spring-boot-starter-thymeleaf.version>2.0.16</spring-boot-starter-thymeleaf.version>
 	</properties>
 
 	<dependencies>

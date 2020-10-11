@@ -36,9 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
         .and()
         .logout()
           .logoutSuccessUrl("/")
+
         .and()
           .csrf()
-          //REST API 서버로 실행되는 애플리케이션의 경우 .disable()을 추가하여 disable 해야한다.
         ;
 
     }
@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
     // 아래 코드는 책의 JDBC 기반 사용자 스토어 예제 코드입니다.
     /*@Autowired
     DataSource dataSource;
+
     @Autowired
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
