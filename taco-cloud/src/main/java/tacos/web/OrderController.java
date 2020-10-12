@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -25,11 +28,21 @@ import tacos.User;
 public class OrderController {
 
 	private OrderRepository orderRepo;
-
-	public OrderController(OrderRepository orderRepo) {
+	private OrderProps orderProps;
+	
+	public OrderController(OrderRepository orderRepo, OrderProps orderProps) {
 	  this.orderRepo = orderRepo;
+	  this.orderProps = orderProps;
 	}
-
+	
+	@GetMapping
+	public String orderForUser(@AuthenticationPrincipal User user, Model model){
+		
+		Pageable pageable = PageRequest.of(0, orderProps.getPageSize());
+		model.addAttribute("orders",orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
+		
+		return "orderList";
+	}
 	@GetMapping("/current")
 	  public String orderForm(@AuthenticationPrincipal User user,
 			  				  @ModelAttribute Order order) {
