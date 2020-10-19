@@ -14,11 +14,16 @@ SPA에서는 프레젠테이션 계층이 백엔드 처리와 거의 독립적�
 |@PatchMapping|HTTP PATCH 요청|리소스 변경하기|
 |@DeleteMapping|HTTP DELETE 요청|리소스 삭제하기|
 |@RequestMapping|다목적 요청 처리이며, HTTP 메서드가 method 속성에 지정된다.||
+
+
 CRUD와 HTTP메서드는 완벽하게 1:1 대응은 아니지만 대응시키는 방법으로 사용된다.
+
 <br>
 
 ### 6.1.1 서버에서 데이터 가져오기
+
 **리스트 6.1 - 최근 타코들의 내역을 보여주는 앵귤러 컴포넌트**
+
 ```typescript
 import { Component, OnInit, Injectable } from '@angular/core';
 import { Http } from '@angular/http';
@@ -49,7 +54,8 @@ export class RecentTacosComponent implements OnInit {
 
 <br>
 
-**리스트6.2 - 타코 디자인 API 요청을 처리하는 REST Controller**
+**리스트6.2 타코 디자인 API 요청을 처리하는 REST Controller**
+<br>
 ```java
 @RestController
 @RequestMapping(path="/design", produces="application/json")// /design 경로의 요청 처리
@@ -72,18 +78,17 @@ public class DesignTacoController {
 }
 ```
 <br>
-
 `@RestController` 애노테이션은 `@Controller`나 `@Service`와 같이 스테레오타입 애노테이션이므로 이 애노테이션이 지정된 클래스를 스프링의 컴포넌트 검색으로 찾을 수 있다. 즉 `@RestController`는 컨트롤러의 모든 Http 요청 처리 메서드에서 HTTP Response Body에 직접 쓰는 값을 반환한다는 것을 스프링에 알려준다. (뷰로 보여줄 값을 반환하는 일반적인 `@Controller` 와는 다르다). 따라서 뷰를 통해 HTML로 변환되지 않고 직접 HTTP 응답으로 브라우저에 전달되어 나타난다. <br>
 리스트 6.2의 DesignTacoController에는 /design 경로의 요청을 처리하도록 @RequestMapping 애노테이션이 지정되었고, recentTacos() 메서드에는 /recent 경로의 GET요청을 처리하는 `@GetMapping`이 지정되었다. 따라서 recentTacos() 메서드에서는 /design/recent 경로의 GET 요청을 처리해야한다. 이것은 리스트 6.1의 앵귤러 코드가 실행될 때 필요한 기능이다. <br>
-`@RequestMapping`애노테이션에는 produces 속성("application/json")도 설정되어있다. 이것은 Accept 헤더에 "application/json"이 포함된 요청만을 DesignTacoController의 메서드에서 처리한다는 것을 나타낸다. 이 경우 응담 결과는 JSON형식이 되지만, produces 속성의 값은 String 배열로 저장된다. XML로 출력하고자 할 때는 다음과 같이 수정하면 된다.
+`@RequestMapping`애노테이션에는 produces 속성("application/json")도 설정되어있다. 이것은 Accept 헤더에 "application/json"이 포함된 요청만을 DesignTacoController의 메서드에서 처리한다는 것을 나타낸다. 이 경우 응담 결과는 JSON형식이 되지만, produces 속성의 값은 String 배열로 저장된다. XML로 출력하고자 할 때는 다음과 같이 수정하면 된다.<br>
 ```java
 @RequestMapping(path="/design", produces={"application/json", "text/xml"})
 ```
 <br>
-
 리스트 6.1의 코드는 리스트 6.2의 API와 별도의 도메인에서 실행중이므로 앵귤러 클라이언트에서 리스트 6.2 API를 사용하지 못하게 막는다. 이런 제약은 CORS(Cross-Origin Resource Sharing) 헤더를 포함시켜 극복할 수 있으며 스프링에서는 @CrossOrign 애노테이션을 지정하여 쉽게 적용할 수 있다.
 <br><br>
 타코 ID로 특정 타코만 가져오는 엔드포인트를 제공하려면 메서드 경로에 플레이스홀더 변수를 지정하면 된다
+<br>
 ```java
 @GetMapping("/{id}")
 public Taco tacoById(@PathVariable("id") Long id) {
@@ -95,8 +100,10 @@ public Taco tacoById(@PathVariable("id") Long id) {
 }
 ```
 <br>
+
 여기서 {id} 부분이 플레이스홀더이며, `@PathVariable`에 의해 {id} 플레이스홀더와 대응되는 id 매개변수에 실제 값이 지정된다. 
 <br><br>
+
 해당 ID와 일치하지 않는다면 null을 반환하지만 이는 좋은 방법이 아니다. null을 반환하더라도 HTTP 200(OK) 상태코드를 클라이언트가 받기 때문이다. 따라서 이때는 다음과 같이 HTTP 404(NOT FOUND) 상태 코드를 응답하는게 좋다.
 ```java
 	@GetMapping("/{id}")
