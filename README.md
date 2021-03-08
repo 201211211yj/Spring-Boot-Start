@@ -1,4 +1,5 @@
 # Spring Boot 정리
+## [1~5. Spring Boot 기초 실습 (taco-cloud 프로젝트)](./taco-cloud)
 
 ## [6. REST 서비스 생성하기](./taco-cloud/CH06.md)
 
